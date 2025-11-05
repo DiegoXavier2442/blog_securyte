@@ -106,8 +106,9 @@ if (isset($_GET["pagina"])){
 
    include "paginas/". $_GET["pagina"].".php";
 
-   // }else{
-   //     include "paginas/error404.php";
+   }else{
+    
+        include "paginas/error404.php";
 
     }
 
