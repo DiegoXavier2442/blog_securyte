@@ -25,12 +25,12 @@
               <h3 class="mt-3 mb-1 fw-bold">Crear Cuenta</h3>
             </div>
 
-            <form id="registroForm">
+            <form id="registroForm" method ="post">
               <div class="mb-3">
-                <label for="usuario" class="form-label d-flex align-items-center gap-2">
+                <label for="nombre" class="form-label d-flex align-items-center gap-2">
                   <i class="bi bi-person" style="font-size:16px;"></i><span>Nombre de usuario</span>
                 </label>
-                <input type="text" class="form-control" id="usuario" name="usuario"
+                <input type="text" class="form-control" id="usuario" name="registroNombre"
                        placeholder="Elige un nombre de usuario" required autofocus autocomplete="username">
               </div>
 
@@ -38,7 +38,7 @@
                 <label for="email" class="form-label d-flex align-items-center gap-2">
                   <i class="bi bi-envelope" style="font-size:16px;"></i><span>Correo electrónico</span>
                 </label>
-                <input type="email" class="form-control" id="email" name="email"
+                <input type="email" class="form-control" id="email" name="registroEmail"
                        placeholder="correo@ejemplo.com" required autocomplete="email">
               </div>
 
@@ -46,11 +46,38 @@
                 <label for="password" class="form-label d-flex align-items-center gap-2">
                   <i class="bi bi-lock" style="font-size:16px;"></i><span>Contraseña</span>
                 </label>
-                <input type="password" class="form-control" id="password" name="password"
+                <input type="password" class="form-control" id="password" name="registroPassword"
                        placeholder="Crea una contraseña segura" required autocomplete="new-password">
               </div>
 
               <div class="d-grid gap-2">
+
+              <?php
+
+  //$registro = new controladorFormularios ();
+  
+ // $registro -> ctrRegistro();
+
+                  $registro = ControladorFormularios::ctrRegistro();
+
+                  if($registro=="ok"){
+
+                    // limpiar el storage, el almacenamiento que esta teniendo el navegador 
+                    // si no tengo el script se va a vlover a enviar la informcion cada ves que actualice el formulario 
+
+      echo '<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    </script>';
+
+
+                    echo'<div class = "alert alert-success"> El usuario ha sido registrado </div>';
+
+                  }
+
+            ?>
+
                 <button type="submit" class="btn btn-dark btn-lg d-inline-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-person-plus"></i><span>Registrarse</span>
                 </button>
