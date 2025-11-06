@@ -78,6 +78,7 @@
               <span>Usuario</span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">
+              <li><a class="dropdown-item" href="index.php?pagina=perfil">Perfil</a></li>
               <li><a class="dropdown-item" href="index.php?pagina=registro">Registrarse</a></li>
               <li><a class="dropdown-item" href="index.php?pagina=login">iniciar sesión</a></li>
               <li><a class="dropdown-item" href="index.php?pagina=salir">Cerra sesión</a></li>
@@ -100,6 +101,7 @@
 if (isset($_GET["pagina"])){
    if( $_GET["pagina"]=="inicio"||
     $_GET["pagina"]=="salir"||
+     $_GET["pagina"]=="perfil"||
     $_GET["pagina"]=="registro"||
      $_GET["pagina"]=="login"){
 
@@ -107,7 +109,7 @@ if (isset($_GET["pagina"])){
    include "paginas/". $_GET["pagina"].".php";
 
    }else{
-    
+
         include "paginas/error404.php";
 
     }

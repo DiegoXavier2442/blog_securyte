@@ -32,4 +32,32 @@ class ModeloFormularios{
 
 
     }
+
+     static public function mdlSeleccionarIngresos($tabla, $item, $valor){
+
+	if($item == null && $valor == null){
+
+		$stmt = Conexion::conectar()->prepare("SELECT *, DATE_FORMAT(fecha_registro, '%d/%m/%Y') AS fecha_registro
+											  FROM $tabla ORDER BY id_usuario DESC");
+
+		$stmt->execute();
+
+		return $stmt -> fetchAll();
+
+	}else{
+
+		$stmt = Conexion::conectar()->prepare("SELECT *, DATE_FORMAT(fecha_registro, '%d/%m/%Y') AS fecha_registro
+											  FROM $tabla WHERE $item = :$item ORDER BY id_usuario  DESC");
+
+		$stmt->bindParam(":".$item, $valor, PDO::PARAM_STR);
+
+		$stmt->execute();
+
+		return $stmt -> fetch();
+	}
+
+	$stmt->close();
+
+	$stmt = null;
+}
 }

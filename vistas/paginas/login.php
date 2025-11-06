@@ -24,24 +24,30 @@
               <h3 class="mt-3 mb-1 fw-bold">Iniciar Sesión</h3>
             </div>
 
-            <form id="loginForm">
+            <form id="loginForm" method ="post">
               <div class="mb-3">
-                <label for="usuario" class="form-label d-flex align-items-center gap-2">
-                  <i class="bi bi-person" style="font-size:16px;"></i><span>Usuario o correo</span>
+                <label for="email" class="form-label d-flex align-items-center gap-2">
+                  <i class="bi bi-person" style="font-size:16px;"></i><span>Correo electrónico</span>
                 </label>
-                <input type="text" class="form-control" id="usuario" name="usuario"
-                       placeholder="Ingresa tu usuario o correo" required autofocus autocomplete="username">
+                <input type="email" class="form-control" id="email" name="ingresoEmail"
+                       placeholder="Ingresa tu correo" required autofocus autocomplete="username">
               </div>
 
               <div class="mb-4">
                 <label for="password" class="form-label d-flex align-items-center gap-2">
                   <i class="bi bi-lock" style="font-size:16px;"></i><span>Contraseña</span>
                 </label>
-                <input type="password" class="form-control" id="password" name="password"
+                <input type="password" class="form-control" id="password" name="ingresoPassword"
                        placeholder="Ingresa tu contraseña" required autocomplete="current-password">
               </div>
 
               <div class="d-grid gap-2">
+
+              <?php
+              $ingreso = new ControladorFormularios();
+
+              $ingreso -> ctrIngreso();
+               ?>
                 <button type="submit" class="btn btn-dark btn-lg d-inline-flex align-items-center justify-content-center gap-2">
                   <i class="bi bi-box-arrow-in-right"></i><span>Ingresar</span>
                 </button>
@@ -49,7 +55,7 @@
             </form>
 
             <div class="text-center mt-3">
-              <a href="registro.php" class="text-decoration-none text-dark">
+              <a href="index.php?pagina=registro" class="text-decoration-none text-dark">
                 <small>¿No tienes cuenta? <strong>Regístrate aquí</strong></small>
               </a>
             </div>

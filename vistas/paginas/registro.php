@@ -85,7 +85,7 @@
             </form>
 
             <div class="text-center mt-3">
-              <a href="vistas/paginas/login.php" class="text-decoration-none text-dark">
+              <a href="index.php?pagina=login" class="text-decoration-none text-dark">
                 <small>¿Ya tienes cuenta? <strong>Inicia sesión aquí</strong></small>
               </a>
             </div>
