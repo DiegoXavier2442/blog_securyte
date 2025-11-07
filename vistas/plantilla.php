@@ -1,7 +1,12 @@
 <?php 
-//variable de secion 
-//session_start();
+//variable de sesion 
+session_start();
 
+// Verificar si hay usuario logueado
+$usuarioLogueado = null;
+if(isset($_SESSION["validarIngreso"]) && $_SESSION["validarIngreso"] == "ok"){
+    $usuarioLogueado = $_SESSION["usuario"]; // Usar el nombre guardado en sesión
+}
 ?>
 <!DOCTYPE html>
 <html lang="es" class="h-100">
@@ -16,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-  
+ 
   <style>
     /* Aplicar Courier Prime a todo el sitio */
     * {
@@ -75,13 +80,27 @@
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navUser"
                data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-person-circle"></i>
-              <span>Usuario</span>
+              <span><?php echo $usuarioLogueado ? strtoupper($usuarioLogueado) : "INVITADO"; ?></span>
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">
-              <li><a class="dropdown-item" href="index.php?pagina=perfil">Perfil</a></li>
-              <li><a class="dropdown-item" href="index.php?pagina=registro">Registrarse</a></li>
-              <li><a class="dropdown-item" href="index.php?pagina=login">iniciar sesión</a></li>
-              <li><a class="dropdown-item" href="index.php?pagina=salir">Cerra sesión</a></li>
+              <?php if($usuarioLogueado): ?>
+                <!-- Opciones cuando está logueado -->
+                <li><a class="dropdown-item" href="index.php?pagina=perfil">
+                  <i class="bi bi-person me-2"></i>Perfil
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="index.php?pagina=salir">
+                  <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                </a></li>
+              <?php else: ?>
+                <!-- Opciones cuando NO está logueado -->
+                <li><a class="dropdown-item" href="index.php?pagina=registro">
+                  <i class="bi bi-person-plus me-2"></i>Registrarse
+                </a></li>
+                <li><a class="dropdown-item" href="index.php?pagina=login">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+                </a></li>
+              <?php endif; ?>
             </ul>
           </li>
         </ul>

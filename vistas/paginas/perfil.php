@@ -1,4 +1,27 @@
 
+<?php
+
+if(!isset($_SESSION["validarIngreso"])){
+echo '<script>window.location = "index.php?pagina=login";</script>';
+    return;
+
+
+
+}else{
+  
+    if($_SESSION["validarIngreso"] != "ok") {
+
+
+    echo '<script>window.location = "index.php?pagina=login";</script>';
+    return;
+    }
+
+}
+
+$usuario = ControladorFormularios::ctrMostrarPerfil();
+?>
+
+
 <!-- Contenido Principal -->
   <div class="container mt-4 flex-grow-1">
     <div class="row">
@@ -10,7 +33,7 @@
             <div class="mb-3">
               <i class="bi bi-person-circle text-dark" style="font-size: 5rem;"></i>
             </div>
-            <h3 class="mb-1">Usuario</h3>
+            <h3 class="mb-1"><?php echo $usuario["usuario"]; ?></h3>
           </div>
         </div>
 
@@ -27,19 +50,19 @@
               <div class="col-sm-4">
                 <strong>Nombre de usuario:</strong>
               </div>
-              <div class="col-sm-8"><?php echo $value["usuario"];?></div>
+              <div class="col-sm-8"><?php echo $usuario["usuario"]; ?></div>
             </div>
             <div class="row mb-3">
               <div class="col-sm-4">
                 <strong>Correo electrónico:</strong>
               </div>
-              <div class="col-sm-8"><?php echo $value["email"];?></div>
+              <div class="col-sm-8"><?php echo $usuario["email"]; ?></div>
             </div>
             <div class="row">
               <div class="col-sm-4">
                 <strong>Fecha de registro:</strong>
               </div>
-              <div class="col-sm-8"><?php echo $value["fecha_registro"];?></div>
+              <div class="col-sm-8"><?php echo $usuario["fecha_registro"]; ?></div>
             </div>
          
           </div>

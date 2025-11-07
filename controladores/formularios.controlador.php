@@ -36,7 +36,11 @@ class ControladorFormularios{
             $respuesta = ModeloFormularios::mdlSeleccionarIngresos($tabla, $item,$valor);
             if($respuesta["email"]==$_POST["ingresoEmail"]&&$respuesta["contrasenia"]==$_POST["ingresoPassword"]){
 
-                
+                $_SESSION["validarIngreso"]="ok";
+                $_SESSION["id"] = $respuesta["id_usuario"];  
+            $_SESSION["usuario"] = $respuesta["usuario"]; 
+            $_SESSION["email"] = $respuesta["email"];     
+
                 echo '<script>
                 if (window.history.replaceState) {
                     window.history.replaceState(null, null, window.location.href);
@@ -65,5 +69,18 @@ class ControladorFormularios{
 
 
 
-}
+    }
+
+     //MOSTRAR PERFIL DEL USUARIO
+    static public function ctrMostrarPerfil(){
+        if(isset($_SESSION["id"])){
+            $tabla = "usuarios";
+            $item = "id_usuario";
+            $valor = $_SESSION["id"];
+            
+            $respuesta = ModeloFormularios::mdlSeleccionarIngresos($tabla, $item, $valor);
+            return $respuesta;
+        }
+    }
+
 }

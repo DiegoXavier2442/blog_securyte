@@ -1,6 +1,6 @@
 <h1>salir</h1>
 <?php 
 
-//session_destroy();
+session_destroy();
 
-//echo '<script>window.location = "index.php?pagina=inicio";</script>';
+echo '<script>window.location = "index.php?pagina=inicio";</script>';
