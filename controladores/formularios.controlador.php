@@ -9,9 +9,10 @@ class ControladorFormularios{
         preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["registroEmail"]) &&
         preg_match('/^[0-9a-zA-Z]+$/', $_POST["registroPassword"])){
 
-            
             $tabla = "usuarios";
+            $token = md5($_POST["registroNombre"]."+".$_POST["registroEmail"]);
             $datos = array( 
+                "token" => $token,
                 "usuario" => $_POST["registroNombre"],
                 "email" => $_POST["registroEmail"],
                 "contrasenia" => $_POST["registroPassword"]
@@ -19,7 +20,6 @@ class ControladorFormularios{
             $respuesta = ModeloFormularios::mdlRegistro($tabla, $datos);
             return $respuesta;
             }else{
-
                 $respuesta="error";
                 return $respuesta;
             }
@@ -36,7 +36,7 @@ class ControladorFormularios{
             
             if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["contrasenia"] == $_POST["ingresoPassword"]){
                 $_SESSION["validarIngreso"] = "ok";
-                $_SESSION["id"] = $respuesta["id_usuario"];  
+                $_SESSION["id"] = $respuesta["token"];  
                 $_SESSION["usuario"] = $respuesta["usuario"]; 
                 $_SESSION["email"] = $respuesta["email"];     
 
@@ -61,7 +61,7 @@ class ControladorFormularios{
     static public function ctrMostrarPerfil(){
         if(isset($_SESSION["id"])){
             $tabla = "usuarios";
-            $item = "id_usuario";
+            $item = "token";
             $valor = $_SESSION["id"];
             
             $respuesta = ModeloFormularios::mdlSeleccionarIngresos($tabla, $item, $valor);
@@ -72,60 +72,99 @@ class ControladorFormularios{
     //ACTUALIZAR PERFIL (Usuario y Email)
     static public function ctrActualizarPerfil() {
         if (isset($_POST["actualizarNombre"])) {
-            $tabla = "usuarios";
-            $datos = array(
-                "id_usuario" => $_SESSION["id"],
-                "usuario" => $_POST["actualizarNombre"],
-                "email" => $_POST["actualizarEmail"]
-            );
-
-            $respuesta = ModeloFormularios::mdlActualizarPerfil($tabla, $datos);
-            
-            if($respuesta == "ok"){
-                // Actualizar sesión
-                $_SESSION["usuario"] = $_POST["actualizarNombre"];
-                $_SESSION["email"] = $_POST["actualizarEmail"];
+            // Validar datos
+            if(preg_match('/^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["actualizarNombre"]) &&
+               preg_match('/^[^0-9][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[@][a-zA-Z0-9_]+([.][a-zA-Z0-9_]+)*[.][a-zA-Z]{2,4}$/', $_POST["actualizarEmail"])){
                 
+                // Obtener usuario actual y verificar token
+                $usuario = ModeloFormularios::mdlSeleccionarIngresos("usuarios", "token", $_POST["tokenUsuario"]);
+                $compararToken = md5($usuario["usuario"]."+".$usuario["email"]);
+                
+                if($compararToken == $_POST["tokenUsuario"]){
+                    $tabla = "usuarios";
+                    $datos = array(
+                        "token" => $_SESSION["id"],
+                        "usuario" => $_POST["actualizarNombre"],
+                        "email" => $_POST["actualizarEmail"]
+                    );
+
+                    $respuesta = ModeloFormularios::mdlActualizarPerfil($tabla, $datos);
+                    
+                    if($respuesta == "ok"){
+                        // Actualizar sesión
+                        $_SESSION["usuario"] = $_POST["actualizarNombre"];
+                        $_SESSION["email"] = $_POST["actualizarEmail"];
+                        
+                        echo '<script>
+                            if (window.history.replaceState) {
+                                window.history.replaceState(null, null, window.location.href);
+                            }
+                        </script>';
+                        echo '<div class="alert alert-success">El perfil ha sido actualizado correctamente</div>';
+                    } else {
+                        echo '<div class="alert alert-danger">Error al actualizar el perfil</div>';
+                    }
+                    
+                    return $respuesta;
+                } else {
+                    echo '<script>
+                        if (window.history.replaceState) {
+                            window.history.replaceState(null, null, window.location.href);
+                        }
+                    </script>';
+                    echo '<div class="alert alert-danger">Token de seguridad inválido</div>';
+                    return "error";
+                }
+            } else {
                 echo '<script>
                     if (window.history.replaceState) {
                         window.history.replaceState(null, null, window.location.href);
                     }
                 </script>';
-                echo '<div class="alert alert-success">El perfil ha sido actualizado correctamente</div>';
-            } else {
-                echo '<div class="alert alert-danger">Error al actualizar el perfil</div>';
+                echo '<div class="alert alert-danger">No están permitidos caracteres especiales</div>';
+                return "error";
             }
-            
-            return $respuesta;
         }
     }
 
     //CAMBIAR CONTRASEÑA
     static public function ctrCambiarPassword() {
         if (isset($_POST["actualizarPassword"])) {
-            // Verificar que la contraseña actual sea correcta
-            if($_POST["actualizarPassword"] == $_POST["passwordActual"]){
+            // Validar formato de contraseña
+            if(preg_match('/^[0-9a-zA-Z]+$/', $_POST["nuevaPassword"])){
                 
-                // Verificar que las nuevas contraseñas coincidan
-                if($_POST["nuevaPassword"] == $_POST["confirmarPassword"]){
+                // Verificar que la contraseña actual sea correcta
+                if($_POST["actualizarPassword"] == $_POST["passwordActual"]){
                     
-                    $tabla = "usuarios";
-                    $datos = array(
-                        "id_usuario" => $_POST["tokenUsuario"],
-                        "contrasenia" => $_POST["nuevaPassword"]
-                    );
+                    // Verificar que las nuevas contraseñas coincidan
+                    if($_POST["nuevaPassword"] == $_POST["confirmarPassword"]){
+                        
+                        $tabla = "usuarios";
+                        $datos = array(
+                            "token" => $_POST["tokenUsuario"],
+                            "contrasenia" => $_POST["nuevaPassword"]
+                        );
 
-                    $respuesta = ModeloFormularios::mdlCambiarPassword($tabla, $datos);
-                    
-                    if($respuesta == "ok"){
+                        $respuesta = ModeloFormularios::mdlCambiarPassword($tabla, $datos);
+                        
+                        if($respuesta == "ok"){
+                            echo '<script>
+                                if (window.history.replaceState) {
+                                    window.history.replaceState(null, null, window.location.href);
+                                }
+                            </script>';
+                            echo '<div class="alert alert-success">La contraseña ha sido actualizada correctamente</div>';
+                        } else {
+                            echo '<div class="alert alert-danger">Error al actualizar la contraseña</div>';
+                        }
+                        
+                    } else {
                         echo '<script>
                             if (window.history.replaceState) {
                                 window.history.replaceState(null, null, window.location.href);
                             }
                         </script>';
-                        echo '<div class="alert alert-success">La contraseña ha sido actualizada correctamente</div>';
-                    } else {
-                        echo '<div class="alert alert-danger">Error al actualizar la contraseña</div>';
+                        echo '<div class="alert alert-danger">Las contraseñas nuevas no coinciden</div>';
                     }
                     
                 } else {
@@ -134,16 +173,15 @@ class ControladorFormularios{
                             window.history.replaceState(null, null, window.location.href);
                         }
                     </script>';
-                    echo '<div class="alert alert-danger">Las contraseñas nuevas no coinciden</div>';
+                    echo '<div class="alert alert-danger">La contraseña actual es incorrecta</div>';
                 }
-                
             } else {
                 echo '<script>
                     if (window.history.replaceState) {
                         window.history.replaceState(null, null, window.location.href);
                     }
                 </script>';
-                echo '<div class="alert alert-danger">La contraseña actual es incorrecta</div>';
+                echo '<div class="alert alert-danger">La contraseña solo puede contener letras y números</div>';
             }
         }
     }

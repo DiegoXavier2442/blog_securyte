@@ -6,8 +6,9 @@ class ModeloFormularios{
 
     //REGISTRO
     static public function mdlRegistro($tabla, $datos){
-        $stmt = conexion::conectar()->prepare("INSERT INTO $tabla (usuario, email, contrasenia) VALUES (:usuario, :email, :contrasenia)");
+        $stmt = conexion::conectar()->prepare("INSERT INTO $tabla (token, usuario, email, contrasenia) VALUES (:token, :usuario, :email, :contrasenia)");
         
+        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);
         $stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
         $stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
         $stmt->bindParam(":contrasenia", $datos["contrasenia"], PDO::PARAM_STR);
@@ -41,11 +42,11 @@ class ModeloFormularios{
 
     //ACTUALIZAR PERFIL (Usuario y Email)
     static public function mdlActualizarPerfil($tabla, $datos){
-        $stmt = conexion::conectar()->prepare("UPDATE $tabla SET usuario = :usuario, email = :email WHERE id_usuario = :id_usuario");
+        $stmt = conexion::conectar()->prepare("UPDATE $tabla SET usuario = :usuario, email = :email WHERE token = :token");
         
         $stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
         $stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
-        $stmt->bindParam(":id_usuario", $datos["id_usuario"], PDO::PARAM_INT);
+        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);  // ← CAMBIAR a PDO::PARAM_STR
         
         if($stmt->execute()){
             return "ok";
@@ -59,10 +60,10 @@ class ModeloFormularios{
 
     //CAMBIAR CONTRASEÑA
     static public function mdlCambiarPassword($tabla, $datos){
-        $stmt = conexion::conectar()->prepare("UPDATE $tabla SET contrasenia = :contrasenia WHERE id_usuario = :id_usuario");
+        $stmt = conexion::conectar()->prepare("UPDATE $tabla SET contrasenia = :contrasenia WHERE token = :token");
         
         $stmt->bindParam(":contrasenia", $datos["contrasenia"], PDO::PARAM_STR);
-        $stmt->bindParam(":id_usuario", $datos["id_usuario"], PDO::PARAM_INT);
+        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);  // ← CAMBIAR a PDO::PARAM_STR
         
         if($stmt->execute()){
             return "ok";

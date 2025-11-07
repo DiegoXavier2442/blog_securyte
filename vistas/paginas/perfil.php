@@ -111,6 +111,8 @@ if($actualizarPerfil == "ok" || $cambiarPassword == "ok"){
               <label for="editEmail" class="form-label">Correo electrónico</label>
               <input type="email" class="form-control" id="editEmail" name="actualizarEmail" value="<?php echo $usuario['email']; ?>" required>
             </div>
+            <!-- ← AGREGAR ESTE INPUT HIDDEN -->
+            <input type="hidden" name="tokenUsuario" value="<?php echo $usuario['token']; ?>">
           </form>
         </div>
         <div class="modal-footer">
@@ -144,7 +146,7 @@ if($actualizarPerfil == "ok" || $cambiarPassword == "ok"){
               <input type="password" class="form-control" id="passwordConfirmar" name="confirmarPassword" required>
             </div>
             <input type="hidden" name="passwordActual" value="<?php echo $usuario['contrasenia']; ?>">
-            <input type="hidden" name="tokenUsuario" value="<?php echo $usuario['id_usuario']; ?>">
+            <input type="hidden" name="tokenUsuario" value="<?php echo $usuario['token']; ?>">
           </form>
         </div>
         <div class="modal-footer">
