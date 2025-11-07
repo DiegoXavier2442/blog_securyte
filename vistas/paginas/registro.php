@@ -65,16 +65,27 @@
                     // limpiar el storage, el almacenamiento que esta teniendo el navegador 
                     // si no tengo el script se va a vlover a enviar la informcion cada ves que actualice el formulario 
 
-      echo '<script>
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-    </script>';
+                    echo '<script>
+                    if (window.history.replaceState) {
+                        window.history.replaceState(null, null, window.location.href);
+                    }
+                    </script>';
 
 
                     echo'<div class = "alert alert-success"> El usuario ha sido registrado </div>';
 
                   }
+                   if($registro=="error"){
+                    echo '<script>
+                    if (window.history.replaceState) {
+                        window.history.replaceState(null, null, window.location.href);
+                    }
+                    </script>';
+
+
+                    echo'<div class = "alert alert-danger"> No estan permitidos caracteres especiales  </div>';
+
+                   }
 
             ?>
 
