@@ -11,12 +11,13 @@ class ControladorFormularios{
 
             $tabla = "usuarios";
             $token = md5($_POST["registroNombre"]."+".$_POST["registroEmail"]);
+            $encriptarPassword = crypt ($_POST["registroPassword"],'$6$rounds=xavier$NJy4rIPjpOaU$0ACEYGg/aKCY3v8O8AfyiO7CTfZQ8/W231Qfh2tRLmfdvFD6XfHk12u6hMr9cYIA4hnpjLNSTRtUwYr9km9Ij/');
             $datos = array( 
                 "token" => $token,
                 "usuario" => $_POST["registroNombre"],
                 "email" => $_POST["registroEmail"],
-                "contrasenia" => $_POST["registroPassword"]
-            );
+                "contrasenia" => $encriptarPassword);
+
             $respuesta = ModeloFormularios::mdlRegistro($tabla, $datos);
             return $respuesta;
             }else{
@@ -33,8 +34,9 @@ class ControladorFormularios{
             $item = "email";
             $valor = $_POST["ingresoEmail"];
             $respuesta = ModeloFormularios::mdlSeleccionarIngresos($tabla, $item, $valor);
+            $encriptarPassword = crypt ($_POST["ingresoPassword"],'$6$rounds=xavier$NJy4rIPjpOaU$0ACEYGg/aKCY3v8O8AfyiO7CTfZQ8/W231Qfh2tRLmfdvFD6XfHk12u6hMr9cYIA4hnpjLNSTRtUwYr9km9Ij/');
             
-            if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["contrasenia"] == $_POST["ingresoPassword"]){
+            if($respuesta["email"] == $_POST["ingresoEmail"] && $respuesta["contrasenia"] == $encriptarPassword){
                 $_SESSION["validarIngreso"] = "ok";
                 $_SESSION["id"] = $respuesta["token"];  
                 $_SESSION["usuario"] = $respuesta["usuario"]; 
@@ -127,35 +129,50 @@ class ControladorFormularios{
         }
     }
 
-    //CAMBIAR CONTRASEÑA
-    static public function ctrCambiarPassword() {
-        if (isset($_POST["actualizarPassword"])) {
-            // Validar formato de contraseña
-            if(preg_match('/^[0-9a-zA-Z]+$/', $_POST["nuevaPassword"])){
-                
-                // Verificar que la contraseña actual sea correcta
-                if($_POST["actualizarPassword"] == $_POST["passwordActual"]){
+            //CAMBIAR CONTRASEÑA
+        static public function ctrCambiarPassword() {
+            if (isset($_POST["actualizarPassword"])) {
+                // Validar formato de contraseña nueva
+                if(preg_match('/^[0-9a-zA-Z]+$/', $_POST["nuevaPassword"])){
                     
-                    // Verificar que las nuevas contraseñas coincidan
-                    if($_POST["nuevaPassword"] == $_POST["confirmarPassword"]){
+                    // Encriptar la contraseña ingresada para compararla
+                    $encriptarPasswordActual = crypt($_POST["actualizarPassword"], '$6$rounds=xavier$NJy4rIPjpOaU$0ACEYGg/aKCY3v8O8AfyiO7CTfZQ8/W231Qfh2tRLmfdvFD6XfHk12u6hMr9cYIA4hnpjLNSTRtUwYr9km9Ij/');
+                    
+                    // Verificar que la contraseña actual sea correcta
+                    if($encriptarPasswordActual == $_POST["passwordActual"]){
                         
-                        $tabla = "usuarios";
-                        $datos = array(
-                            "token" => $_POST["tokenUsuario"],
-                            "contrasenia" => $_POST["nuevaPassword"]
-                        );
+                        // Verificar que las nuevas contraseñas coincidan
+                        if($_POST["nuevaPassword"] == $_POST["confirmarPassword"]){
+                            
+                            // Encriptar la nueva contraseña
+                            $encriptarPasswordNueva = crypt($_POST["nuevaPassword"], '$6$rounds=xavier$NJy4rIPjpOaU$0ACEYGg/aKCY3v8O8AfyiO7CTfZQ8/W231Qfh2tRLmfdvFD6XfHk12u6hMr9cYIA4hnpjLNSTRtUwYr9km9Ij/');
+                            
+                            $tabla = "usuarios";
+                            $datos = array(
+                                "token" => $_POST["tokenUsuario"],
+                                "contrasenia" => $encriptarPasswordNueva  // ← Enviar contraseña encriptada
+                            );
 
-                        $respuesta = ModeloFormularios::mdlCambiarPassword($tabla, $datos);
-                        
-                        if($respuesta == "ok"){
+                            $respuesta = ModeloFormularios::mdlCambiarPassword($tabla, $datos);
+                            
+                            if($respuesta == "ok"){
+                                echo '<script>
+                                    if (window.history.replaceState) {
+                                        window.history.replaceState(null, null, window.location.href);
+                                    }
+                                </script>';
+                                echo '<div class="alert alert-success">La contraseña ha sido actualizada correctamente</div>';
+                            } else {
+                                echo '<div class="alert alert-danger">Error al actualizar la contraseña</div>';
+                            }
+                            
+                        } else {
                             echo '<script>
                                 if (window.history.replaceState) {
                                     window.history.replaceState(null, null, window.location.href);
                                 }
                             </script>';
-                            echo '<div class="alert alert-success">La contraseña ha sido actualizada correctamente</div>';
-                        } else {
-                            echo '<div class="alert alert-danger">Error al actualizar la contraseña</div>';
+                            echo '<div class="alert alert-danger">Las contraseñas nuevas no coinciden</div>';
                         }
                         
                     } else {
@@ -164,25 +181,16 @@ class ControladorFormularios{
                                 window.history.replaceState(null, null, window.location.href);
                             }
                         </script>';
-                        echo '<div class="alert alert-danger">Las contraseñas nuevas no coinciden</div>';
+                        echo '<div class="alert alert-danger">La contraseña actual es incorrecta</div>';
                     }
-                    
                 } else {
                     echo '<script>
                         if (window.history.replaceState) {
                             window.history.replaceState(null, null, window.location.href);
                         }
                     </script>';
-                    echo '<div class="alert alert-danger">La contraseña actual es incorrecta</div>';
+                    echo '<div class="alert alert-danger">La contraseña solo puede contener letras y números</div>';
                 }
-            } else {
-                echo '<script>
-                    if (window.history.replaceState) {
-                        window.history.replaceState(null, null, window.location.href);
-                    }
-                </script>';
-                echo '<div class="alert alert-danger">La contraseña solo puede contener letras y números</div>';
             }
         }
-    }
 }
