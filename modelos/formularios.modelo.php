@@ -40,30 +40,31 @@ class ModeloFormularios{
         $stmt = null;
     }
 
-    //ACTUALIZAR PERFIL (Usuario y Email)
-    static public function mdlActualizarPerfil($tabla, $datos){
-        $stmt = conexion::conectar()->prepare("UPDATE $tabla SET usuario = :usuario, email = :email WHERE token = :token");
-        
-        $stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
-        $stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
-        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);  // ← CAMBIAR a PDO::PARAM_STR
-        
-        if($stmt->execute()){
-            return "ok";
-        } else {
-            print_r(conexion::conectar()->errorInfo());
-        }
-
-        $stmt->close();
-        $stmt = null;
+   //ACTUALIZAR PERFIL (Usuario y Email + Token)
+static public function mdlActualizarPerfil($tabla, $datos){
+    $stmt = conexion::conectar()->prepare("UPDATE $tabla SET token = :nuevoToken, usuario = :usuario, email = :email WHERE token = :tokenActual");
+    
+    $stmt->bindParam(":nuevoToken", $datos["nuevoToken"], PDO::PARAM_STR);
+    $stmt->bindParam(":usuario", $datos["usuario"], PDO::PARAM_STR);
+    $stmt->bindParam(":email", $datos["email"], PDO::PARAM_STR);
+    $stmt->bindParam(":tokenActual", $datos["tokenActual"], PDO::PARAM_STR);  
+    
+    if($stmt->execute()){
+        return "ok";
+    } else {
+        print_r(conexion::conectar()->errorInfo());
     }
+
+    $stmt->close();
+    $stmt = null;
+}
 
     //CAMBIAR CONTRASEÑA
     static public function mdlCambiarPassword($tabla, $datos){
         $stmt = conexion::conectar()->prepare("UPDATE $tabla SET contrasenia = :contrasenia WHERE token = :token");
         
         $stmt->bindParam(":contrasenia", $datos["contrasenia"], PDO::PARAM_STR);
-        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);  // ← CAMBIAR a PDO::PARAM_STR
+        $stmt->bindParam(":token", $datos["token"], PDO::PARAM_STR);  
         
         if($stmt->execute()){
             return "ok";
