@@ -1,4 +1,4 @@
-<h1>salir</h1>
+
 <?php 
 
 session_destroy();

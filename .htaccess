@@ -1,1 +1,33 @@
 Options All -Indexes
+RewriteEngine On
+
+# Define la base como tu carpeta de proyecto para evitar que salte al dashboard
+RewriteBase /blog/
+
+# Permite que si el archivo o carpeta existe físicamente, no se aplique la regla de reescritura
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9/]+)$ index.php?pagina=$1 [L,QSA]
+
+# Asegurando el archivo htaccess
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Bloqueo de agentes (opcional pero lo mantenemos de tu código)
+RewriteCond %{HTTP_USER_AGENT} ^Anarchie [OR]
+RewriteCond %{HTTP_USER_AGENT} ^ASPSeek [OR]
+RewriteCond %{HTTP_USER_AGENT} ^attach [OR]
+RewriteCond %{HTTP_USER_AGENT} ^autoemailspider [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Xaldon\ WebSpider [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Xenu [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Zeus.*Webster [OR]
+RewriteCond %{HTTP_USER_AGENT} ^Zeus
+RewriteRule ^.* - [F,L]
+
+# Configuración de Autenticación
+AuthType Basic
+AuthName "Área Restringida"
+AuthUserFile "D:/archivos/Nueva carpeta/htdocs/blog/.htpasswd"
+Require valid-user

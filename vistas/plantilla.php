@@ -36,7 +36,7 @@ if(isset($_SESSION["validarIngreso"]) && $_SESSION["validarIngreso"] == "ok"){
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="index.php?pagina=inicio">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="inicio">
         <i class="bi bi-journal-text"></i><span>Mi Blog</span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -48,7 +48,7 @@ if(isset($_SESSION["validarIngreso"]) && $_SESSION["validarIngreso"] == "ok"){
         <!-- Izquierda -->
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="index.php?pagina=inicio">Inicio</a>
+            <a class="nav-link active" href="inicio">Inicio</a>
           </li>
 
           <!-- Dropdown Categorías -->
@@ -85,19 +85,19 @@ if(isset($_SESSION["validarIngreso"]) && $_SESSION["validarIngreso"] == "ok"){
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navUser">
               <?php if($usuarioLogueado): ?>
                 <!-- Opciones cuando está logueado -->
-                <li><a class="dropdown-item" href="index.php?pagina=perfil">
+                <li><a class="dropdown-item" href="perfil">
                   <i class="bi bi-person me-2"></i>Perfil
                 </a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="index.php?pagina=salir">
+                <li><a class="dropdown-item text-danger" href="salir">
                   <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
                 </a></li>
               <?php else: ?>
                 <!-- Opciones cuando NO está logueado -->
-                <li><a class="dropdown-item" href="index.php?pagina=registro">
+                <li><a class="dropdown-item" href="registro">
                   <i class="bi bi-person-plus me-2"></i>Registrarse
                 </a></li>
-                <li><a class="dropdown-item" href="index.php?pagina=login">
+                <li><a class="dropdown-item" href="login">
                   <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
                 </a></li>
               <?php endif; ?>
